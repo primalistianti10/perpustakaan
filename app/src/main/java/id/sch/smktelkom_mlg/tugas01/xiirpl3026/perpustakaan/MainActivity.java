@@ -6,46 +6,61 @@ import android.view.View;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.RadioButton;
+import android.widget.RadioGroup;
 import android.widget.TextView;
 
 public class MainActivity extends AppCompatActivity {
     EditText etNama;
-    RadioButton rb1, rb2;
+    RadioGroup rgStatus;
     TextView tvHasil;
-    Button Hasil;
+    Button bOk;
 
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
-
         etNama = (EditText) findViewById(R.id.editTextNama);
-        Hasil = (Button) findViewById(R.id.buttonHasil);
-        tvHasil= (TextView) findViewById(R.id.textView7);
-        
-        findViewById(R.id.buttonHasil).setOnClickListener(new View.OnClickListener() {
+        rgStatus = (RadioGroup) findViewById(R.id.radiogrupStatus);
+        tvHasil=(TextView) findViewById(R.id.textViewHasil);
+        bOk = (Button) findViewById(R.id.buttonHasil);
+        bOk.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                doClick();
-            }
-
-            private void doClick() {
-                String hasil = null;
-
-                if(rb1.isChecked()){
-                    hasil = rb1.getText().toString();
-                }
-                else if (rb2.isChecked()){
-                    hasil = rb2.getText().toString();
-                }
-                if (hasil==null){
-                    tvHasil.setText("Anda Belum Memilih Jenis Buku");
-                }
-                else {
-                    tvHasil.setText("Jenis Buku : " + hasil);
-                }
+                doProcess();
             }
         });
+    }
+
+    private void doProcess() {
+        if(isValid()){
+            String nama =etNama.getText().toString();
+            String hasil = null;
+            if(rgStatus.getCheckedRadioButtonId()!=-1)
+            {
+                RadioButton rb = (RadioButton)
+                        findViewById(rgStatus.getCheckedRadioButtonId());
+                hasil = rb.getText().toString();
+            }
+            tvHasil.setText(" Nama : " + nama + hasil);
+        }
+    }
+
+    private boolean isValid() {
+        boolean valid = true;
+
+        String nama = etNama.getText().toString();
+        if(nama.isEmpty()){
+            etNama.setError("Nama Belum Diisi");
+            valid = false;
+        }
+        else if(nama.length()<3){
+            etNama.setError("Nama minimal 3 karakte");
+            valid = false;
+        }
+        else {
+            etNama.setError(null);
+        }
+        return valid;
     }
 }
